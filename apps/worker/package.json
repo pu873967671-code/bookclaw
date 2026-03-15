@@ -1,0 +1,20 @@
+{
+  "name": "@clawread/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.883.0",
+    "adm-zip": "^0.5.16",
+    "bullmq": "^5.46.1",
+    "dotenv": "^16.4.5",
+    "he": "^1.2.0",
+    "ioredis": "^5.4.1",
+    "pg": "^8.13.1",
+    "tsx": "^4.19.3"
+  }
+}

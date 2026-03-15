@@ -1,0 +1,22 @@
+{
+  "name": "clawread",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm --workspace @clawread/api run dev",
+    "dev:worker": "npm --workspace @clawread/worker run dev",
+    "dev:web": "npm --workspace @clawread/web run dev",
+    "build": "npm run build --workspace @clawread/web",
+    "start": "npm run start --workspace @clawread/web",
+    "start:api": "npm --workspace @clawread/api run start",
+    "start:worker": "npm --workspace @clawread/worker run start",
+    "start:web": "npm --workspace @clawread/web run start"
+  },
+  "dependencies": {
+    "gsap": "^3.14.2"
+  }
+}
