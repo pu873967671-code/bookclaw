@@ -676,6 +676,9 @@ app.post('/v1/tts/speak', async (req, res) => {
       voice: googleVoice
     });
 
+  } catch (error) {
+    console.error('[tts] Error:', error);
+    return res.status(500).json({ error: 'tts_failed', detail: String(error) });
   }
 });
 
