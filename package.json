@@ -17,6 +17,7 @@
     "start:web": "npm --workspace @clawread/web run start"
   },
   "dependencies": {
-    "gsap": "^3.14.2"
+    "gsap": "^3.14.2",
+    "@google-cloud/text-to-speech": "^5.6.0"
   }
 }

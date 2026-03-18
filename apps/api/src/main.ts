@@ -639,41 +639,43 @@ app.post('/v1/tts/speak', async (req, res) => {
       </speak>
     `.trim();
 
-    // 调用 Azure TTS API
-    const azureUrl = `https://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/v1`;
-    const azureRes = await fetch(azureUrl, {
-      method: 'POST',
-      headers: {
-        'Ocp-Apim-Subscription-Key': azureKey,
-        'Content-Type': 'application/ssml+xml',
-        'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
-        'User-Agent': 'ClawRead-TTS'
-      },
-      body: ssml
-    });
-
-    if (!azureRes.ok) {
-      const error = await azureRes.text();
-      console.error('[tts] Azure TTS error:', azureRes.status, error);
-      return res.status(azureRes.status).json({ 
-        error: 'azure_tts_failed', 
-        detail: error 
+    
+    // Google TTS 调用
+    const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    const googleVoice = process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A';
+    const googleRate = parseFloat(process.env.GOOGLE_TTS_RATE || '1.0');
+    const googlePitch = parseFloat(process.env.GOOGLE_TTS_PITCH || '0');
+    if (!googleCreds) {
+      return res.status(400).json({
+        success: false,
+        message: '请配置 GOOGLE_APPLICATION_CREDENTIALS 以使用 Google TTS'
       });
     }
 
-    // 获取音频数据
-    const audioBuffer = await azureRes.arrayBuffer();
-    const audioBase64 = Buffer.from(audioBuffer).toString('base64');
+    const client = new textToSpeech.TextToSpeechClient();
+    const request = {
+      input: { ssml: ssml },
+      voice: {
+        languageCode: 'zh-CN',
+        name: googleVoice
+      },
+      audioConfig: {
+        audioEncoding: 'MP3',
+        speakingRate: googleRate,
+        pitch: googlePitch
+      }
+    };
 
-    return res.json({ 
+    const [response] = await client.synthesizeSpeech(request as any);
+    const audioBuffer = response.audioContent as Buffer;
+    const audioBase64 = audioBuffer.toString('base64');
+
+    return res.json({
       audio: audioBase64,
-      mode: 'azure',
-      voice: azureVoice
+      mode: 'google',
+      voice: googleVoice
     });
 
-  } catch (error) {
-    console.error('[tts] Error:', error);
-    return res.status(500).json({ error: 'tts_failed', detail: String(error) });
   }
 });
 

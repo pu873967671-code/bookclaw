@@ -39,13 +39,12 @@ type ChapterRow = {
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/clawread';
-// 生产环境默认走 Azure，只有显式 MOCK_TTS=true 才使用 ffmpeg mock
+// 生产环境默认走 Google TTS，只有显式 MOCK_TTS=true 才使用 ffmpeg mock
 const mockTts = process.env.MOCK_TTS === 'true';
-const azureTtsKey = process.env.AZURE_TTS_KEY || '';
-const azureTtsRegion = process.env.AZURE_TTS_REGION || 'eastasia';
-const azureVoice = process.env.AZURE_TTS_VOICE || 'zh-CN-XiaoxiaoNeural';
-const azureRate = process.env.AZURE_TTS_RATE || '+0%';
-const azurePitch = process.env.AZURE_TTS_PITCH || '+0Hz';
+const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
+const googleVoice = process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A';
+const googleRate = parseFloat(process.env.GOOGLE_TTS_RATE || '1.0');
+const googlePitch = parseFloat(process.env.GOOGLE_TTS_PITCH || '0');
 const ffmpegBin = process.env.FFMPEG_BIN || 'ffmpeg';
 const ffprobeBin = process.env.FFPROBE_BIN || 'ffprobe';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -204,34 +203,25 @@ function xmlEscape(input: string) {
 function buildSsml(text: string) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <speak version="1.0" xml:lang="zh-CN" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts">
-  <voice name="${xmlEscape(azureVoice)}">
-    <prosody rate="${xmlEscape(azureRate)}" pitch="${xmlEscape(azurePitch)}">${xmlEscape(text)}</prosody>
+  <voice name="${xmlEscape(googleVoice)}">
+    <prosody rate="${xmlEscape(googleRate.toString())}" pitch="${xmlEscape(googlePitch.toString())}">${xmlEscape(text)}</prosody>
   </voice>
 </speak>`;
 }
 
-async function synthesizeAzureMp3(text: string, outPath: string) {
-  if (!azureTtsKey) throw new Error('azure_tts_key_missing');
-  const endpoint = `https://${azureTtsRegion}.tts.speech.microsoft.com/cognitiveservices/v1`;
+async function synthesizeGoogleMp3(text: string, outPath: string) {
+  if (!googleCreds) throw new Error('google_tts_credentials_missing');
   const ssml = buildSsml(text);
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Ocp-Apim-Subscription-Key': azureTtsKey,
-      'Content-Type': 'application/ssml+xml',
-      'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3',
-      'User-Agent': 'clawread/0.1.0'
-    },
-    body: ssml
-  });
+  const client = new textToSpeech.TextToSpeechClient();
+  const request = {
+    input: { ssml },
+    voice: { languageCode: 'zh-CN', name: googleVoice },
+    audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
+  };
 
-  if (!response.ok) {
-    const body = await response.text().catch(() => '');
-    throw new Error(`azure_tts_http_${response.status}:${body.slice(0, 200)}`);
-  }
-
-  const arr = await response.arrayBuffer();
+  const [response] = await client.synthesizeSpeech(request as any);
+  const arr = response.audioContent as Buffer;
   await ensureDirForFile(outPath);
   await fs.writeFile(outPath, Buffer.from(arr));
 }
@@ -409,7 +399,7 @@ async function runTTS(data: QueueJobData) {
     if (mockTts) {
       await generateMockMp3(ch.text_content, outPath);
     } else {
-      await synthesizeAzureMp3(ch.text_content, outPath);
+      await synthesizeGoogleMp3(ch.text_content, outPath);
     }
 
     if (useObjectStorage) {
@@ -649,7 +639,7 @@ console.log('[worker] up with redis:', redisUrl);
 console.log('[worker] db:', databaseUrl);
 console.log('[worker] mockTts:', mockTts);
 console.log('[worker] storageRoot:', storageRoot);
-console.log('[worker] azureVoice:', azureVoice);
+console.log('[worker] googleVoice:', googleVoice);
 console.log('[worker] useObjectStorage:', useObjectStorage);
 console.log('[worker] s3Bucket:', s3Bucket || '');
 console.log('[worker] autoCreateBucket:', autoCreateBucket);
