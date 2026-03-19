@@ -662,70 +662,7 @@ app.post('/api/tts', async (req, res) => {
   }
 });
 
-    }
 
-    // 真实 Azure TTS 调用
-    const azureKey = process.env.AZURE_TTS_KEY!;
-    const azureRegion = process.env.AZURE_TTS_REGION || 'eastasia';
-    const azureVoice = process.env.AZURE_TTS_VOICE || 'zh-HK-HiuGaaiNeural';
-    const azureRate = process.env.AZURE_TTS_RATE || '+0%';
-    const azurePitch = process.env.AZURE_TTS_PITCH || '+0Hz';
-
-    // 构建 SSML
-    const ssml = `
-      <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="${azureVoice}">
-          <prosody rate="${azureRate}" pitch="${azurePitch}">
-            ${text}
-          </prosody>
-        </voice>
-      </speak>
-    `.trim();
-
-    
-    // Google TTS 调用
-    const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-    const googleVoice = process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A';
-    const googleRate = parseFloat(process.env.GOOGLE_TTS_RATE || '1.0');
-    const googlePitch = parseFloat(process.env.GOOGLE_TTS_PITCH || '0');
-    if (!googleCreds) {
-      return res.status(400).json({
-        success: false,
-        message: '请配置 GOOGLE_APPLICATION_CREDENTIALS 以使用 Google TTS'
-      });
-    }
-
-    const client = new textToSpeech.TextToSpeechClient();
-    const request = {
-      input: { ssml: ssml },
-      voice: {
-        languageCode: 'zh-CN',
-        name: googleVoice
-      },
-      audioConfig: {
-        audioEncoding: 'MP3',
-        speakingRate: googleRate,
-        pitch: googlePitch
-      }
-    };
-
-    const [response] = await client.synthesizeSpeech(request as any);
-    const audioBuffer = response.audioContent as Buffer;
-    const audioBase64 = audioBuffer.toString('base64');
-
-    return res.json({
-      audio: audioBase64,
-      mode: 'google',
-      voice: googleVoice
-    });
-
-  } catch (error) {
-    console.error('[tts] Error:', error);
-    return res.status(500).json({ error: 'tts_failed', detail: String(error) });
-  }
-});
-
-const port = Number(process.env.PORT || 3000);
 app.listen(port, '0.0.0.0', async () => {
   await fs.mkdir(storageRoot, { recursive: true });
   await ensureSchema();
