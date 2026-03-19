@@ -601,24 +601,67 @@ app.post('/v1/translate/cantonese', async (req, res) => {
 });
 
 // 简单 TTS 端点（用于粤语转换助手）
-app.post('/v1/tts/speak', async (req, res) => {
-  const { text } = req.body;
-  
-  if (!text || typeof text !== 'string') {
-    return res.status(400).json({ error: 'text_required' });
-  }
-
+app.post('/api/tts', async (req, res) => {
   try {
-    // Mock 模式：返回浏览器可以播放的提示音
-    if (process.env.MOCK_TTS === 'true' || !process.env.AZURE_TTS_KEY) {
-      // 返回一个简单的音频数据（1秒静音）
-      const silentBase64 = '//uQxAAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=';
-      
-      return res.json({ 
-        audio: silentBase64,
+    const { text } = req.body || {};
+    if (!text) return res.status(400).json({ error: 'text_required' });
+
+    if (process.env.MOCK_TTS === 'true') {
+      return res.json({
+        audio: '',
         mode: 'mock',
-        message: 'Mock 模式：请配置 AZURE_TTS_KEY 以使用真实语音'
+        voice: 'mock'
       });
+    }
+
+    const ssml = `
+      <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
+        <voice name="${process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A'}">
+          <prosody rate="${process.env.GOOGLE_TTS_RATE || '1.0'}" pitch="${process.env.GOOGLE_TTS_PITCH || '0'}">
+            ${text}
+          </prosody>
+        </voice>
+      </speak>
+    `.trim();
+
+    const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    if (!googleCreds) {
+      return res.status(400).json({
+        success: false,
+        message: '请配置 GOOGLE_APPLICATION_CREDENTIALS 以使用 Google TTS'
+      });
+    }
+
+    const client = new (require('@google-cloud/text-to-speech').TextToSpeechClient)();
+    const request = {
+      input: { ssml },
+      voice: {
+        languageCode: 'zh-CN',
+        name: process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A'
+      },
+      audioConfig: {
+        audioEncoding: 'MP3',
+        speakingRate: parseFloat(process.env.GOOGLE_TTS_RATE || '1.0'),
+        pitch: parseFloat(process.env.GOOGLE_TTS_PITCH || '0')
+      }
+    };
+
+    const [response] = await client.synthesizeSpeech(request);
+    const audioBuffer = response.audioContent;
+    const audioBase64 = Buffer.from(audioBuffer).toString('base64');
+
+    return res.json({
+      audio: audioBase64,
+      mode: 'google',
+      voice: process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A'
+    });
+
+  } catch (error) {
+    console.error('[tts] Error:', error);
+    return res.status(500).json({ error: 'tts_failed', detail: String(error) });
+  }
+});
+
     }
 
     // 真实 Azure TTS 调用
