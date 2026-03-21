@@ -64,6 +64,18 @@ const autoCreateBucket = process.env.S3_AUTO_CREATE_BUCKET !== 'false';
 const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null });
 const pool = new Pool({ connectionString: databaseUrl });
 
+async function ensureGoogleCredentialsPath() {
+  const credsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  if (!credsJson) {
+    return process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
+  }
+
+  const targetPath = '/tmp/google-tts.json';
+  await fs.writeFile(targetPath, credsJson, 'utf8');
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = targetPath;
+  return targetPath;
+}
+
 async function ensureSchema() {
   const schemaPath = path.join(repoRoot, 'packages', 'db', 'schema.sql');
   const sql = await fs.readFile(schemaPath, 'utf8');
@@ -211,7 +223,8 @@ function buildSsml(text: string) {
 }
 
 async function synthesizeGoogleMp3(text: string, outPath: string) {
-  if (!googleCreds) throw new Error('google_tts_credentials_missing');
+  const resolvedGoogleCreds = await ensureGoogleCredentialsPath();
+  if (!resolvedGoogleCreds) throw new Error('google_tts_credentials_missing');
   const ssml = buildSsml(text);
 
   const client = new textToSpeech.TextToSpeechClient();

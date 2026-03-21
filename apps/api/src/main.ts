@@ -17,6 +17,18 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 const { Pool } = pg;
 
+async function ensureGoogleCredentialsPath() {
+  const credsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  if (!credsJson) {
+    return process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
+  }
+
+  const targetPath = '/tmp/google-tts.json';
+  await fs.writeFile(targetPath, credsJson, 'utf8');
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = targetPath;
+  return targetPath;
+}
+
 type JobType = 'parse' | 'tts' | 'render';
 
 type BookRow = {
@@ -626,11 +638,11 @@ app.post('/api/tts', async (req, res) => {
       </speak>
     `.trim();
 
-    const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    const googleCreds = await ensureGoogleCredentialsPath();
     if (!googleCreds) {
       return res.status(400).json({
         success: false,
-        message: '请配置 GOOGLE_APPLICATION_CREDENTIALS 以使用 Google TTS'
+        message: '请配置 GOOGLE_APPLICATION_CREDENTIALS 或 GOOGLE_APPLICATION_CREDENTIALS_JSON 以使用 Google TTS'
       });
     }
 
