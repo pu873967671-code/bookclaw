@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import IORedis from 'ioredis';
 import { Worker } from 'bullmq';
 import pg from 'pg';
+import textToSpeech from '@google-cloud/text-to-speech';
 import AdmZip from 'adm-zip';
 import he from 'he';
 import { CreateBucketCommand, HeadBucketCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
