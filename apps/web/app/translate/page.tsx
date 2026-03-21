@@ -174,7 +174,7 @@ export default function TranslatePage() {
       audio.setAttribute('playsinline', 'true');
       audio.preload = 'auto';
 
-      const res = await fetch(apiUrl('/v1/tts/speak'), {
+      const res = await fetch(apiUrl('/api/tts'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: output })
