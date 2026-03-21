@@ -65,7 +65,11 @@ const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null });
 const pool = new Pool({ connectionString: databaseUrl });
 
 async function ensureGoogleCredentialsPath() {
-  const credsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+  const credsB64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_B64;
+  const credsJson = credsB64
+    ? Buffer.from(credsB64, 'base64').toString('utf8')
+    : process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+
   if (!credsJson) {
     return process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
   }
