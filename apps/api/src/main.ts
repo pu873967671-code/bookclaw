@@ -649,8 +649,15 @@ app.post('/api/tts', async (req, res) => {
     };
 
     const [response] = await client.synthesizeSpeech(request);
-    const audioBuffer = response.audioContent;
-    const audioBase64 = Buffer.from(audioBuffer).toString('base64');
+    const audioContent = response.audioContent;
+
+    if (!audioContent) {
+      return res.status(500).json({ error: 'tts_audio_empty' });
+    }
+
+    const audioBase64 = typeof audioContent === 'string'
+      ? audioContent
+      : Buffer.from(audioContent as Uint8Array).toString('base64');
 
     return res.json({
       audio: audioBase64,
