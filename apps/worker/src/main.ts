@@ -43,7 +43,7 @@ const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:postgres@
 // 生产环境默认走 Google TTS，只有显式 MOCK_TTS=true 才使用 ffmpeg mock
 const mockTts = process.env.MOCK_TTS === 'true';
 const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
-const googleVoice = process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-B';
+const googleVoice = process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-C';
 const googleRate = parseFloat(process.env.GOOGLE_TTS_RATE || '1.0');
 const googlePitch = parseFloat(process.env.GOOGLE_TTS_PITCH || '0');
 const ffmpegBin = process.env.FFMPEG_BIN || 'ffmpeg';
