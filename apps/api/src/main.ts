@@ -56,6 +56,7 @@ const s3AccessKeyId = process.env.S3_ACCESS_KEY_ID || '';
 const s3SecretAccessKey = process.env.S3_SECRET_ACCESS_KEY || '';
 const signedUrlExpiresSec = Number(process.env.SIGNED_URL_EXPIRES_SEC || 3600);
 const useObjectStorage = process.env.USE_OBJECT_STORAGE === 'true';
+const port = Number(process.env.PORT || 3000);
 
 const pool = new Pool({ connectionString: databaseUrl });
 const redis = new IORedis(redisUrl, { maxRetriesPerRequest: null });
