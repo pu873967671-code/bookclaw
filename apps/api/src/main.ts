@@ -11,6 +11,7 @@ import IORedis from 'ioredis';
 
 // fetch is available globally in Node 18+
 import pg from 'pg';
+import textToSpeech from '@google-cloud/text-to-speech';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -633,7 +634,7 @@ app.post('/api/tts', async (req, res) => {
       });
     }
 
-    const client = new (require('@google-cloud/text-to-speech').TextToSpeechClient)();
+    const client = new textToSpeech.TextToSpeechClient();
     const request = {
       input: { ssml },
       voice: {
