@@ -634,7 +634,7 @@ app.post('/api/tts', async (req, res) => {
 
     const ssml = `
       <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="${process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A'}">
+        <voice name="${process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-A'}">
           <prosody rate="${process.env.GOOGLE_TTS_RATE || '1.0'}" pitch="${process.env.GOOGLE_TTS_PITCH || '0'}">
             ${text}
           </prosody>
@@ -655,7 +655,7 @@ app.post('/api/tts', async (req, res) => {
       input: { ssml },
       voice: {
         languageCode: 'zh-CN',
-        name: process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A'
+        name: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-A'
       },
       audioConfig: {
         audioEncoding: 'MP3',
@@ -678,7 +678,7 @@ app.post('/api/tts', async (req, res) => {
     return res.json({
       audio: audioBase64,
       mode: 'google',
-      voice: process.env.GOOGLE_TTS_VOICE || 'cmn-CN-Standard-A'
+      voice: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-A'
     });
 
   } catch (error) {
