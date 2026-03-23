@@ -50,7 +50,7 @@ export function HowItWorksSection() {
             Upload, process, and listen. ClawRead handles everything in between — chapter splitting, voice synthesis, and rendering.
           </p>
         </div>
-        <div className="mt-15 grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-10 rounded-[20px] overflow-hidden">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-10 rounded-[20px] overflow-hidden">
           {STEPS.map((step) => (
             <div key={step.num} className="bg-cream p-10 transition-colors duration-300 hover:bg-[#EFEBDF] group cursor-default">
               <p className="font-serif text-[56px] leading-none text-ink-10 group-hover:text-ink-30 transition-colors duration-300 mb-6">
