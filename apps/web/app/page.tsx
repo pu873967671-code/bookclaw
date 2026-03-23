@@ -1,23 +1,11 @@
-import { Header }           from '@/components/layout/Header'
-import { Footer }           from '@/components/layout/Footer'
-import { HeroSection }      from '@/components/home/HeroSection'
-import { HowItWorksSection } from '@/components/home/HowItWorksSection'
-import { FeaturesSection }  from '@/components/home/FeaturesSection'
-import { LanguagesSection } from '@/components/home/LanguagesSection'
-import { CTASection }       from '@/components/home/CTASection'
-
 export default function HomePage() {
   return (
-    <>
-      <Header />
-      <main>
-        <HeroSection />
-        <HowItWorksSection />
-        <FeaturesSection />
-        <LanguagesSection />
-        <CTASection />
-      </main>
-      <Footer />
-    </>
-  )
+    <main>
+      {/* 静态 HTML landing page - 请直接访问 /landing 或使用 React 版本 */}
+      <div style={{ padding: '100px 20px', textAlign: 'center' }}>
+        <h1>ClawRead</h1>
+        <p>Landing page loading...</p>
+      </div>
+    </main>
+  );
 }
