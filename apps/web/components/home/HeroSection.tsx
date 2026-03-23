@@ -89,7 +89,7 @@ export function HeroSection() {
 
         <h1 className="animate-fadeUp-2 font-serif text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7">
           Books that<br />
-          <em className="text-amber not-italic italic">speak</em> to you
+          <em className="text-amber not-italic italic">Speak</em> to You
         </h1>
 
         <p className="animate-fadeUp-3 text-[17px] font-light leading-[1.7] text-ink-60 max-w-[420px] mb-11">
