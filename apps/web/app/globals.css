@@ -41,7 +41,7 @@
 
   /* Font families with !important to override Tailwind defaults */
   .font-serif {
-    font-family: 'DM Serif Display', Georgia, serif !important;
+    font-family: 'Playfair Display', Georgia, serif !important;
   }
   .font-sans {
     font-family: 'DM Sans', system-ui, sans-serif !important;
