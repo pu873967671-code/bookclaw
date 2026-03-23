@@ -4,9 +4,9 @@ import Link from 'next/link';
 
 export function Header() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-12 py-5 flex items-center justify-between backdrop-blur-lg bg-cream/85 border-b border-ink-10 animate-slide-down">
-      <div className="flex items-center gap-2.5 font-serif text-[22px] text-ink tracking-[-0.3px]">
-        <div className="w-7 h-7 bg-ink rounded-lg flex items-center justify-center flex-shrink-0">
+    <nav className="nav">
+      <div className="nav-logo">
+        <div className="logo-claw">
           <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
             <path d="M4 12C4 8 8 8 8 5C8 2 5 1 3 3" stroke="#F5F2EA" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
             <path d="M8 12C8 8.5 11 8.5 11 6C11 3.5 9 2.5 7.5 4" stroke="#F5F2EA" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
@@ -17,16 +17,14 @@ export function Header() {
         ClawRead
       </div>
       
-      <ul className="flex gap-8 list-none">
-        <li><a href="#how" className="text-sm font-normal text-ink-60 hover:text-ink transition-colors">How it works</a></li>
-        <li><a href="#features" className="text-sm font-normal text-ink-60 hover:text-ink transition-colors">Features</a></li>
-        <li><a href="#languages" className="text-sm font-normal text-ink-60 hover:text-ink transition-colors">Languages</a></li>
-        <li><a href="https://github.com/pu873967671-code/bookclaw" className="text-sm font-normal text-ink-60 hover:text-ink transition-colors">GitHub</a></li>
+      <ul className="nav-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#languages">Languages</a></li>
+        <li><a href="https://github.com/pu873967671-code/bookclaw">GitHub</a></li>
       </ul>
       
-      <a href="#cta" className="text-sm font-medium px-5 py-2.5 bg-ink text-cream rounded-full hover:bg-ink/90 transition-all hover:-translate-y-0.5">
-        Get started free
-      </a>
+      <a href="#cta" className="nav-cta">Get started free</a>
     </nav>
   );
 }

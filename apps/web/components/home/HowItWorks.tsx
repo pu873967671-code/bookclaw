@@ -39,27 +39,25 @@ const steps = [
 export function HowItWorks() {
   return (
     <>
-      <hr className="border-ink-10 max-w-7xl mx-auto" />
-      <section id="how" className="py-20 px-12 max-w-7xl mx-auto">
+      <hr className="divider" />
+      <section id="how" className="section">
         <div className="reveal">
-          <div className="text-[11px] font-medium tracking-[0.1em] uppercase text-ink-30 mb-4">Process</div>
-          <h2 className="font-serif text-4xl lg:text-[48px] leading-[1.1] tracking-[-1px] text-ink max-w-[560px] mb-5">
-            Three steps from book to audio
-          </h2>
-          <p className="text-base font-light leading-[1.7] text-ink-60 max-w-[480px]">
+          <div className="section-label">Process</div>
+          <h2 className="section-title">Three steps from book to audio</h2>
+          <p className="section-sub">
             Upload, process, and listen. ClawRead handles everything in between — chapter splitting, voice synthesis, and rendering.
           </p>
         </div>
         
-        <div className="grid grid-cols-3 gap-[2px] bg-ink-10 rounded-[20px] overflow-hidden mt-16 reveal">
-          {steps.map((step, i) => (
-            <div key={step.num} className="bg-cream p-10 transition-colors hover:bg-[#EFEBDF]">
-              <div className="font-serif text-[56px] text-ink-10 leading-none mb-6 transition-colors hover:text-ink-30">{step.num}</div>
-              <div className="w-10 h-10 rounded-[10px] bg-ink-10 flex items-center justify-center mb-5 transition-colors hover:bg-amber-light text-ink">
+        <div className="steps-grid reveal">
+          {steps.map((step) => (
+            <div key={step.num} className="step-card">
+              <div className="step-num">{step.num}</div>
+              <div className="step-icon">
                 {step.icon}
               </div>
-              <h3 className="font-serif text-[22px] font-normal tracking-[-0.3px] mb-3">{step.title}</h3>
-              <p className="text-sm leading-[1.7] font-light text-ink-60">{step.desc}</p>
+              <h3 className="step-title">{step.title}</h3>
+              <p className="step-desc">{step.desc}</p>
             </div>
           ))}
         </div>
