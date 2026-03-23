@@ -44,7 +44,7 @@ function BookPlayer() {
         </span>
         <div className="relative z-10">
           <p className="text-[10px] font-medium tracking-widest text-amber uppercase mb-2">粤語繪本</p>
-          <p className="font-serif text-[22px] leading-tight text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700 }}>
+          <p className="font-serif text-[22px] leading-tight text-white tracking-tight" style={{ fontFamily: "'DM Serif Display', Georgia, serif", textShadow: '0 0 1px rgba(255,255,255,0.3)' }}>
             Little Dragon's<br />Big Journey
           </p>
         </div>
@@ -87,9 +87,9 @@ export function HeroSection() {
           AI-Powered TTS Platform
         </span>
 
-        <h1 className="animate-fadeUp-2 font-serif text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700 }}>
+        <h1 className="animate-fadeUp-2 font-serif text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7" style={{ fontFamily: "'DM Serif Display', Georgia, serif", textShadow: '0 0 1px rgba(26,24,20,0.5)' }}>
           Books that<br />
-          <em className="text-amber italic" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>speak</em> to you
+          <em className="text-amber italic" style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}>speak</em> to you
         </h1>
 
         <p className="animate-fadeUp-3 text-[17px] font-light leading-[1.7] text-ink-60 max-w-[420px] mb-11">
