@@ -43,7 +43,7 @@ export function HowItWorksSection() {
       <section id="how" className="max-w-[1280px] mx-auto px-12 py-20">
         <div>
           <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-ink-30 mb-4">Process</p>
-          <h2 className="font-serif text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[560px] mb-5">
+          <h2 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[560px] mb-5">
             Three steps from book to audio
           </h2>
           <p className="text-base font-light leading-[1.7] text-ink-60 max-w-[480px]">
@@ -53,13 +53,13 @@ export function HowItWorksSection() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-10 rounded-[20px] overflow-hidden">
           {STEPS.map((step) => (
             <div key={step.num} className="bg-cream p-10 transition-colors duration-300 hover:bg-[#EFEBDF] group cursor-default">
-              <p className="font-serif text-[56px] leading-none text-ink-10 group-hover:text-ink-30 transition-colors duration-300 mb-6">
+              <p style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[56px] leading-none text-ink-10 group-hover:text-ink-30 transition-colors duration-300 mb-6">
                 {step.num}
               </p>
               <div className="w-10 h-10 rounded-[10px] bg-ink-10 group-hover:bg-amber-light flex items-center justify-center mb-5 transition-colors duration-300 text-ink">
                 {step.icon}
               </div>
-              <h3 className="font-serif text-[22px] font-normal tracking-tight mb-3">{step.title}</h3>
+              <h3 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[22px] font-normal tracking-tight mb-3">{step.title}</h3>
               <p className="text-sm font-light leading-[1.7] text-ink-60">{step.desc}</p>
             </div>
           ))}

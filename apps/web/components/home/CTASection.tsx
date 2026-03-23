@@ -4,7 +4,7 @@ export function CTASection() {
   return (
     <section id="cta" style={{textAlign: 'center', padding: '80px 48px 120px'}}>
       <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-ink-30 mb-4">Open source · MIT</p>
-      <h2 className="font-serif text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[640px] mx-auto mb-6">
+      <h2 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[640px] mx-auto mb-6">
         Ready to give your library a voice?
       </h2>
       <p className="text-base font-light leading-[1.7] text-ink-60 max-w-[480px] mx-auto mb-12">

@@ -36,7 +36,7 @@ export function FeaturesSection() {
       <div style={{display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '80px', alignItems: 'start', padding: '100px 48px 0', maxWidth: '1280px', margin: '0 auto'}}>
         <div style={{position: 'sticky', top: '100px'}}>
           <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-ink-30 mb-4">Capabilities</p>
-          <h2 className="font-serif text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[560px] mb-5">
+          <h2 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[560px] mb-5">
             Built for the<br/>whole pipeline
           </h2>
           <p className="text-base font-light leading-[1.7] text-ink-60 max-w-[480px]">

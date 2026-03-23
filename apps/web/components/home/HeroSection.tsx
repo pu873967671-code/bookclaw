@@ -87,7 +87,7 @@ export function HeroSection() {
           AI-Powered TTS Platform
         </span>
 
-        <h1 className="animate-fadeUp-2 font-serif text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7">
+        <h1 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="animate-fadeUp-2 text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7">
           Books that<br />
           <em className="text-amber not-italic italic">speak</em> to you
         </h1>
