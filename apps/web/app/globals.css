@@ -74,6 +74,14 @@ body {
   50% { transform: translateY(6px); }
 }
 
+.animate-badge-float-1 {
+  animation: badgeFloat1 5s ease-in-out infinite;
+}
+
+.animate-badge-float-2 {
+  animation: badgeFloat2 5.5s ease-in-out infinite;
+}
+
 /* Scroll reveal */
 .reveal {
   opacity: 0;
