@@ -623,7 +623,8 @@ app.post('/v1/translate/cantonese', async (req, res) => {
 // 简单 TTS 端点（用于粤语转换助手）
 app.post('/api/tts', async (req, res) => {
   try {
-    const { text } = req.body || {};
+    const { text, voice } = req.body || {};
+    const selectedVoice = voice || process.env.GOOGLE_TTS_VOICE || DEFAULT_VOICE;
     if (!text) return res.status(400).json({ error: 'text_required' });
 
     if (process.env.MOCK_TTS === 'true') {
@@ -636,7 +637,7 @@ app.post('/api/tts', async (req, res) => {
 
     const ssml = `
       <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="${process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'}">
+        <voice name="${selectedVoice}">
           <prosody rate="${process.env.GOOGLE_TTS_RATE || '1.0'}" pitch="${process.env.GOOGLE_TTS_PITCH || '0'}">
             ${text}
           </prosody>

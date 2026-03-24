@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawRead — Upload</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #F5F2EA;
+      --ink: #1A1814;
+      --ink-60: rgba(26,24,20,0.6);
+      --ink-30: rgba(26,24,20,0.3);
+      --ink-10: rgba(26,24,20,0.08);
+      --amber: #C8853A;
+      --amber-light: #F0D9B8;
+      --teal: #2A7B6F;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background-color: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(245,242,234,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--ink-10);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--serif);
+      font-size: 22px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo-claw {
+      width: 28px;
+      height: 28px;
+      background: var(--ink);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-claw svg { width: 16px; height: 16px; }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--ink-60);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    /* MAIN */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 140px 48px 80px;
+    }
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .page-subtitle {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--ink-60);
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--ink-10);
+      padding-bottom: 16px;
+    }
+    .tab-btn {
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      background: transparent;
+      border: 1px solid var(--ink-10);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--ink-60);
+    }
+    .tab-btn:hover {
+      border-color: var(--amber);
+      color: var(--ink);
+    }
+    .tab-btn.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--cream);
+    }
+    /* UPLOAD AREA */
+    .upload-area {
+      border: 2px dashed var(--ink-10);
+      border-radius: 20px;
+      padding: 60px 40px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      background: white;
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--amber);
+      background: rgba(200,133,58,0.05);
+    }
+    .upload-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      color: var(--amber);
+    }
+    .upload-title {
+      font-family: var(--serif);
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .upload-hint {
+      font-size: 14px;
+      color: var(--ink-60);
+      margin-bottom: 24px;
+    }
+    .upload-formats {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .format-badge {
+      padding: 6px 14px;
+      background: var(--ink-10);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-60);
+    }
+    /* FILE INPUT */
+    .file-input { display: none; }
+    .file-list {
+      margin-top: 32px;
+      display: none;
+    }
+    .file-list.has-files { display: block; }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1px solid var(--ink-10);
+    }
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--amber-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-info { flex: 1; }
+    .file-name {
+      font-weight: 500;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .file-size {
+      font-size: 13px;
+      color: var(--ink-60);
+    }
+    .file-remove {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--ink-30);
+      transition: color 0.2s;
+    }
+    .file-remove:hover { color: var(--ink); }
+    /* BUTTON */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      border-radius: 32px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 24px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(26,24,20,0.18);
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    /* SCANNER SECTION */
+    .scanner-section {
+      display: none;
+    }
+    .scanner-section.active {
+      display: block;
+    }
+    .scanner-preview {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ink-10);
+    }
+    .scanner-preview img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      main { padding: 120px 24px 60px; }
+      .tabs { flex-wrap: wrap; }
+      .upload-area { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <div class="logo-claw">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M4 12 C4 8, 8 8, 8 5 C8 2, 5 1, 3 3" stroke="#F5F2EA" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M8 12 C8 8.5, 11 8.5, 11 6 C11 3.5, 9 2.5, 7.5 4" stroke="#F5F2EA" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M12 12 C12 9, 14 8, 13 6 C12.2 4.5, 10.5 4.5, 10 6" stroke="#F5F2EA" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <line x1="3" y1="12.5" x2="13" y2="12.5" stroke="#F5F2EA" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      ClawRead
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">首页</a></li>
+      <li><a href="/translate">转换</a></li>
+      <li><a href="https://github.com/pu873967671-code/bookclaw">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+    <h1 class="page-title">上传内容</h1>
+    <p class="page-subtitle">上传电子书或扫描绘本，系统将自动识别并转换为粤语音频。支持多种格式，智能章节分割。</p>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('ebook')">电子书</button>
+      <button class="tab-btn" onclick="switchTab('scanner')">扫描绘本</button>
+    </div>
+
+    <!-- EBOOK UPLOAD -->
+    <div id="ebook-section" class="upload-section active">
+      <div class="upload-area" id="ebook-dropzone">
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 16V8M12 8L9 11M12 8L15 11" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 15V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V15" stroke-linecap="round"/>
+        </svg>
+        <h3 class="upload-title">拖放电子书到此处</h3>
+        <p class="upload-hint">或点击选择文件</p>
+        <div class="upload-formats">
+          <span class="format-badge">.epub</span>
+          <span class="format-badge">.txt</span>
+          <span class="format-badge">.pdf</span>
+        </div>
+        <input type="file" id="ebook-input" class="file-input" accept=".epub,.txt,.pdf">
+      </div>
+      <div id="ebook-list" class="file-list"></div>
+      <button class="btn-primary" id="ebook-submit" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12H19M12 5L19 12L12 19" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        开始处理
+      </button>
+    </div>
+
+    <!-- SCANNER UPLOAD -->
+    <div id="scanner-section" class="scanner-section">
+      <div class="upload-area" id="scanner-dropzone">
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke-linecap="round"/>
+          <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+          <path d="M21 15L16 10L5 21" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="upload-title">上传绘本图片</h3>
+        <p class="upload-hint">支持多页扫描，按顺序上传</p>
+        <div class="upload-formats">
+          <span class="format-badge">.jpg</span>
+          <span class="format-badge">.png</span>
+          <span class="format-badge">.webp</span>
+        </div>
+        <input type="file" id="scanner-input" class="file-input" accept="image/*" multiple>
+      </div>
+      <div id="scanner-list" class="file-list"></div>
+      <button class="btn-primary" id="scanner-submit" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12H19M12 5L19 12L12 19" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        开始识别
+      </button>
+    </div>
+  </main>
+
+  <script>
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.upload-section, .scanner-section').forEach(sec => sec.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tab + '-section').classList.add('active');
+    }
+
+    // EBOOK UPLOAD
+    const ebookDropzone = document.getElementById('ebook-dropzone');
+    const ebookInput = document.getElementById('ebook-input');
+    const ebookList = document.getElementById('ebook-list');
+    const ebookSubmit = document.getElementById('ebook-submit');
+    let ebookFiles = [];
+
+    ebookDropzone.addEventListener('click', () => ebookInput.click());
+    ebookDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      ebookDropzone.classList.add('dragover');
+    });
+    ebookDropzone.addEventListener('dragleave', () => {
+      ebookDropzone.classList.remove('dragover');
+    });
+    ebookDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      ebookDropzone.classList.remove('dragover');
+      handleEbookFiles(e.dataTransfer.files);
+    });
+    ebookInput.addEventListener('change', (e) => handleEbookFiles(e.target.files));
+
+    function handleEbookFiles(files) {
+      ebookFiles = Array.from(files);
+      renderFileList(ebookFiles, ebookList, 'ebook');
+      ebookSubmit.disabled = ebookFiles.length === 0;
+    }
+
+    // SCANNER UPLOAD
+    const scannerDropzone = document.getElementById('scanner-dropzone');
+    const scannerInput = document.getElementById('scanner-input');
+    const scannerList = document.getElementById('scanner-list');
+    const scannerSubmit = document.getElementById('scanner-submit');
+    let scannerFiles = [];
+
+    scannerDropzone.addEventListener('click', () => scannerInput.click());
+    scannerDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      scannerDropzone.classList.add('dragover');
+    });
+    scannerDropzone.addEventListener('dragleave', () => {
+      scannerDropzone.classList.remove('dragover');
+    });
+    scannerDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      scannerDropzone.classList.remove('dragover');
+      handleScannerFiles(e.dataTransfer.files);
+    });
+    scannerInput.addEventListener('change', (e) => handleScannerFiles(e.target.files));
+
+    function handleScannerFiles(files) {
+      scannerFiles = Array.from(files);
+      renderFileList(scannerFiles, scannerList, 'scanner');
+      scannerSubmit.disabled = scannerFiles.length === 0;
+    }
+
+    // RENDER FILE LIST
+    function renderFileList(files, container, type) {
+      if (files.length === 0) {
+        container.classList.remove('has-files');
+        container.innerHTML = '';
+        return;
+      }
+      container.classList.add('has-files');
+      container.innerHTML = files.map((file, i) => `
+        <div class="file-item">
+          <div class="file-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 2V8H20" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-size">${formatSize(file.size)}</div>
+          </div>
+          <button class="file-remove" onclick="removeFile('${type}', ${i})">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6L18 18" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function removeFile(type, index) {
+      if (type === 'ebook') {
+        ebookFiles.splice(index, 1);
+        renderFileList(ebookFiles, ebookList, 'ebook');
+        ebookSubmit.disabled = ebookFiles.length === 0;
+      } else {
+        scannerFiles.splice(index, 1);
+        renderFileList(scannerFiles, scannerList, 'scanner');
+        scannerSubmit.disabled = scannerFiles.length === 0;
+      }
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+  </script>
+</body>
+</html>
