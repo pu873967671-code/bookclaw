@@ -1,0 +1,37 @@
+// Google TTS yue-HK Chirp3-HD 声音列表
+export const YUE_HK_VOICES = [
+  // 女声
+  { id: 'yue-HK-Chirp3-HD-Aoede', name: 'Aoede', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Achernar', name: 'Achernar', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Autonoe', name: 'Autonoe', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Callirrhoe', name: 'Callirrhoe', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Despina', name: 'Despina', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Erinome', name: 'Erinome', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Gacrux', name: 'Gacrux', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Kore', name: 'Kore', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Laomedeia', name: 'Laomedeia', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Leda', name: 'Leda', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Pulcherrima', name: 'Pulcherrima', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Sulafat', name: 'Sulafat', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Vindemiatrix', name: 'Vindemiatrix', gender: 'female' },
+  { id: 'yue-HK-Chirp3-HD-Zephyr', name: 'Zephyr', gender: 'female' },
+  // 男声
+  { id: 'yue-HK-Chirp3-HD-Achird', name: 'Achird', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Algenib', name: 'Algenib', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Algieba', name: 'Algieba', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Alnilam', name: 'Alnilam', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Charon', name: 'Charon', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Enceladus', name: 'Enceladus', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Fenrir', name: 'Fenrir', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Iapetus', name: 'Iapetus', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Orus', name: 'Orus', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Puck', name: 'Puck', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Rasalgethi', name: 'Rasalgethi', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Sadachbia', name: 'Sadachbia', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Sadaltager', name: 'Sadaltager', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Schedar', name: 'Schedar', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Umbriel', name: 'Umbriel', gender: 'male' },
+  { id: 'yue-HK-Chirp3-HD-Zubenelgenubi', name: 'Zubenelgenubi', gender: 'male' },
+];
+
+export const DEFAULT_VOICE = 'yue-HK-Chirp3-HD-Aoede';

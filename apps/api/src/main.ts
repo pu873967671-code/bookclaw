@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { Queue } from 'bullmq';
 import IORedis from 'ioredis';
 
+import { YUE_HK_VOICES, DEFAULT_VOICE } from './voices.js';
 // fetch is available globally in Node 18+
 import pg from 'pg';
 import textToSpeech from '@google-cloud/text-to-speech';
@@ -267,6 +268,7 @@ async function getSignedDownloadUrl(objectKey: string, downloadName: string) {
 
 app.get('/', (_, res) => {
   res.status(200).json({
+app.get('/v1/voices', (_, res) => { res.json({ voices: YUE_HK_VOICES, default: DEFAULT_VOICE }); });
     ok: true,
     service: 'clawread-api',
     message: 'alive',
@@ -634,7 +636,7 @@ app.post('/api/tts', async (req, res) => {
 
     const ssml = `
       <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="${process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-A'}">
+        <voice name="${process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'}">
           <prosody rate="${process.env.GOOGLE_TTS_RATE || '1.0'}" pitch="${process.env.GOOGLE_TTS_PITCH || '0'}">
             ${text}
           </prosody>
@@ -655,7 +657,7 @@ app.post('/api/tts', async (req, res) => {
       input: { ssml },
       voice: {
         languageCode: 'zh-CN',
-        name: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-A'
+        name: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'
       },
       audioConfig: {
         audioEncoding: 'MP3',
@@ -678,7 +680,7 @@ app.post('/api/tts', async (req, res) => {
     return res.json({
       audio: audioBase64,
       mode: 'google',
-      voice: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Standard-A'
+      voice: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'
     });
 
   } catch (error) {
