@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 const STEPS = [
   {
     num: '01',
@@ -12,9 +14,23 @@ const STEPS = [
     ),
     title: 'Upload your ebook',
     desc: 'Drop in a .txt or .epub file. Our parser automatically detects chapters and structures the content for narration.',
+    href: '/generate',
   },
   {
     num: '02',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.2"/>
+        <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        <circle cx="14" cy="14" r="3" fill="currentColor"/>
+      </svg>
+    ),
+    title: 'Scan your story book',
+    desc: 'Scan physical picture books with your camera. AI extracts text from images and converts to audio-ready content.',
+    href: '/scan',
+  },
+  {
+    num: '03',
     icon: (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.2"/>
@@ -23,16 +39,7 @@ const STEPS = [
     ),
     title: 'Choose a voice',
     desc: 'Pick from Azure Neural voices or enable mock TTS for local development. Supports Cantonese, Mandarin, English, and more.',
-  },
-  {
-    num: '03',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    title: 'Download & listen',
-    desc: 'Your audiobook renders as a single MP3 via ffmpeg concat. Download directly or stream via signed URL from object storage.',
+    href: '/voices',
   },
 ]
 
@@ -52,7 +59,7 @@ export function HowItWorksSection() {
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-10 rounded-[20px] overflow-hidden">
           {STEPS.map((step) => (
-            <div key={step.num} className="bg-cream p-10 transition-colors duration-300 hover:bg-[#EFEBDF] group cursor-default">
+            <Link key={step.num} href={step.href} className="bg-cream p-10 transition-colors duration-300 hover:bg-[#EFEBDF] group cursor-pointer block">
               <p style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[56px] leading-none text-ink-10 group-hover:text-ink-30 transition-colors duration-300 mb-6">
                 {step.num}
               </p>
@@ -61,7 +68,7 @@ export function HowItWorksSection() {
               </div>
               <h3 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[22px] font-normal tracking-tight mb-3">{step.title}</h3>
               <p className="text-sm font-light leading-[1.7] text-ink-60">{step.desc}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
