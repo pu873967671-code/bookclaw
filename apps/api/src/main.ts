@@ -7,9 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { Queue } from 'bullmq';
-import IORedis from 'ioredis';
+import IORedis from 'ioredis'; import { YUE_HK_VOICES, DEFAULT_VOICE } from './voices.js';
 
-import { YUE_HK_VOICES, DEFAULT_VOICE } from './voices.js';
 // fetch is available globally in Node 18+
 import pg from 'pg';
 import textToSpeech from '@google-cloud/text-to-speech';
@@ -268,7 +267,6 @@ async function getSignedDownloadUrl(objectKey: string, downloadName: string) {
 
 app.get('/', (_, res) => {
   res.status(200).json({
-app.get('/v1/voices', (_, res) => { res.json({ voices: YUE_HK_VOICES, default: DEFAULT_VOICE }); });
     ok: true,
     service: 'clawread-api',
     message: 'alive',
@@ -276,7 +274,7 @@ app.get('/v1/voices', (_, res) => { res.json({ voices: YUE_HK_VOICES, default: D
   });
 });
 
-app.get('/health', async (_, res) => {
+app.get('/v1/voices', (_, res) => { res.json({ voices: YUE_HK_VOICES, default: DEFAULT_VOICE }); }); app.get('/health', async (_, res) => {
   try {
     await pool.query('select 1');
     res.json({
@@ -623,8 +621,7 @@ app.post('/v1/translate/cantonese', async (req, res) => {
 // 简单 TTS 端点（用于粤语转换助手）
 app.post('/api/tts', async (req, res) => {
   try {
-    const { text, voice } = req.body || {};
-    const selectedVoice = voice || process.env.GOOGLE_TTS_VOICE || DEFAULT_VOICE;
+    const { text } = req.body || {};
     if (!text) return res.status(400).json({ error: 'text_required' });
 
     if (process.env.MOCK_TTS === 'true') {
@@ -637,7 +634,7 @@ app.post('/api/tts', async (req, res) => {
 
     const ssml = `
       <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
-        <voice name="${selectedVoice}">
+        <voice name="${process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'}">
           <prosody rate="${process.env.GOOGLE_TTS_RATE || '1.0'}" pitch="${process.env.GOOGLE_TTS_PITCH || '0'}">
             ${text}
           </prosody>
