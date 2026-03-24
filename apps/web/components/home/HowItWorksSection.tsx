@@ -12,8 +12,8 @@ const STEPS = [
         <path d="M7 10h6M7 13h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
       </svg>
     ),
-    title: '电子书',
-    desc: '上传 .txt 或 .epub 文件，自动检测章节并结构化内容，准备进行语音合成。',
+    title: 'Upload your ebook',
+    desc: 'Drop in a .txt or .epub file. Our parser automatically detects chapters and structures the content for narration.',
     href: '/generate',
   },
   {
@@ -25,8 +25,8 @@ const STEPS = [
         <circle cx="14" cy="14" r="3" fill="currentColor"/>
       </svg>
     ),
-    title: '扫描绘本',
-    desc: '用相机扫描实体绘本，AI 从图片中提取文字并转换为音频内容。',
+    title: 'Scan your story book',
+    desc: 'Scan physical picture books with your camera. AI extracts text from images and converts to audio-ready content.',
     href: '/scan',
   },
   {
@@ -37,8 +37,8 @@ const STEPS = [
         <path d="M7 10 Q10 6 13 10 Q10 14 7 10Z" fill="currentColor"/>
       </svg>
     ),
-    title: '选择声音',
-    desc: '从多种 AI 声音中选择，支持粤语、普通话、英语等多种语言。',
+    title: 'Choose a voice',
+    desc: 'Pick from Azure Neural voices or enable mock TTS for local development. Supports Cantonese, Mandarin, English, and more.',
     href: '/voices',
   },
 ]
@@ -51,10 +51,10 @@ export function HowItWorksSection() {
         <div>
           <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-ink-30 mb-4">Process</p>
           <h2 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[clamp(32px,3.5vw,48px)] leading-[1.1] tracking-[-1px] text-ink max-w-[560px] mb-5">
-            三步完成书籍转音频
+            Three steps from book to audio
           </h2>
           <p className="text-base font-light leading-[1.7] text-ink-60 max-w-[480px]">
-            上传、处理、收听。ClawRead 自动处理章节分割、语音合成和渲染。
+            Upload, process, and listen. ClawRead handles everything in between — chapter splitting, voice synthesis, and rendering.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-10 rounded-[20px] overflow-hidden">
