@@ -66,7 +66,7 @@ export function HowItWorksSection() {
               <div className="w-10 h-10 rounded-[10px] bg-ink-10 group-hover:bg-amber-light flex items-center justify-center mb-5 transition-colors duration-300 text-ink">
                 {step.icon}
               </div>
-              <h3 style={{fontFamily: '"DM Serif Display", Georgia, serif'}} className="text-[22px] font-normal tracking-tight mb-3">{step.title}</h3>
+              <h3 className="text-[22px] font-normal tracking-tight mb-3">{step.title}</h3>
               <p className="text-sm font-light leading-[1.7] text-ink-60">{step.desc}</p>
             </Link>
           ))}

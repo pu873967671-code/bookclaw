@@ -25,7 +25,6 @@ function Waveform() {
 
 function BookPlayer() {
   const [playing, setPlaying] = useState(false)
-
   return (
     <div className="w-[320px] bg-white rounded-3xl border border-ink-10 shadow-[0_32px_80px_rgba(26,24,20,0.10),0_4px_12px_rgba(26,24,20,0.05)] overflow-hidden animate-floatCard">
       {/* Cover */}
@@ -44,12 +43,14 @@ function BookPlayer() {
         </span>
         <div className="relative z-10">
           <p className="text-[10px] font-medium tracking-widest text-amber uppercase mb-2">粤語繪本</p>
-          <p className="font-serif text-[22px] leading-tight text-white tracking-tight" style={{ fontFamily: "'DM Serif Display', Georgia, serif", WebkitTextStroke: '0.3px currentColor' }}>
+          <p
+            className="font-serif text-[22px] leading-tight text-white tracking-tight"
+            style={{ fontFamily: "'DM Serif Display', Georgia, serif", WebkitTextStroke: '0.3px currentColor' }}
+          >
             Little Dragon's<br />Big Journey
           </p>
         </div>
       </div>
-
       {/* Player body */}
       <div className="p-5">
         <Waveform />
@@ -86,44 +87,31 @@ export function HeroSection() {
         <span className="animate-fadeUp-1 inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.08em] uppercase text-amber mb-7 before:block before:w-5 before:h-px before:bg-amber">
           AI-Powered TTS Platform
         </span>
-
-        <h1 className="animate-fadeUp-2 font-serif text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7" style={{ fontFamily: "'DM Serif Display', Georgia, serif", WebkitTextStroke: '0.3px currentColor' }}>
+        <h1
+          className="animate-fadeUp-2 font-serif text-[clamp(48px,5.5vw,76px)] leading-[1.05] tracking-[-1.5px] text-ink mb-7"
+          style={{ fontFamily: "'DM Serif Display', Georgia, serif", WebkitTextStroke: '0.3px currentColor' }}
+        >
           Books that<br />
           <em className="text-amber italic" style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}>speak</em> to you
         </h1>
-
         <p className="animate-fadeUp-3 text-[17px] font-light leading-[1.7] text-ink-60 max-w-[420px] mb-11">
           Upload any ebook and get a studio-quality audiobook in minutes — powered by AI voices that understand the language, tone, and rhythm of your text.
         </p>
-
-        <div className="animate-fadeUp-4 flex gap-4 items-center flex-wrap">
+        <div className="animate-fadeUp-4 flex gap-4 items-center flex-wrap mt-8">
           <Link
             href="https://github.com/pu873967671-code/bookclaw"
-            className="
-              inline-flex items-center gap-2
-              text-[15px] font-medium
-              px-7 py-3.5
-              bg-ink text-cream rounded-full no-underline
-              transition-all duration-200
-              hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(26,24,20,0.18)]
-              active:translate-y-0
-            "
+            className="inline-flex items-center gap-2 text-[15px] font-medium px-7 py-3.5 bg-ink text-cream rounded-full no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(26,24,20,0.18)] active:translate-y-0"
           >
             Start for free
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
           </Link>
           <Link
             href="#how"
-            className="group inline-flex items-center gap-1.5 text-[15px] text-ink-60 no-underline hover:text-ink transition-colors duration-200"
+            className="text-[15px] text-ink-60 no-underline hover:text-ink transition-colors duration-200"
           >
             See how it works
-            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
           </Link>
         </div>
       </div>
-
       {/* Visual */}
       <div className="animate-fadeIn-hero flex justify-center items-center">
         <div className="relative">
@@ -132,9 +120,7 @@ export function HeroSection() {
             <span className="w-2 h-2 rounded-full bg-teal flex-shrink-0" />
             <span className="text-ink text-xs font-medium">Processing chapter 3…</span>
           </div>
-
           <BookPlayer />
-
           {/* Badge bottom */}
           <div className="animate-badge2 absolute bottom-8 -left-8 z-10 bg-white rounded-xl border border-ink-10 shadow-[0_8px_24px_rgba(26,24,20,0.10)] px-3.5 py-2.5 flex items-center gap-2 whitespace-nowrap">
             <span className="w-2 h-2 rounded-full bg-amber flex-shrink-0" />
