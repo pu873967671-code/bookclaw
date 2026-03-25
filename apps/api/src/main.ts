@@ -118,7 +118,7 @@ const createBookSchema = z
     title: z.string().min(1),
     sourceObjectKey: z.string().min(1).optional(),
     sourceText: z.string().min(1).optional(),
-    language: z.string().default('zh-CN'),
+    language: z.string().default('yue-HK'),
     totalChars: z.number().int().nonnegative().optional(),
     userId: z.string().uuid().optional()
   })
@@ -633,7 +633,7 @@ app.post('/api/tts', async (req, res) => {
     }
 
     const ssml = `
-      <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">
+      <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="yue-HK">
         <voice name="${process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'}">
           <prosody rate="${process.env.GOOGLE_TTS_RATE || '1.0'}" pitch="${process.env.GOOGLE_TTS_PITCH || '0'}">
             ${text}
@@ -654,7 +654,7 @@ app.post('/api/tts', async (req, res) => {
     const request = {
       input: { ssml },
       voice: {
-        languageCode: 'zh-CN',
+        languageCode: 'yue-HK',
         name: process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede'
       },
       audioConfig: {

@@ -219,7 +219,7 @@ function xmlEscape(input: string) {
 
 function buildSsml(text: string) {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.0" xml:lang="zh-CN" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts">
+<speak version="1.0" xml:lang="yue-HK" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts">
   <voice name="${xmlEscape(googleVoice)}">
     <prosody rate="${xmlEscape(googleRate.toString())}" pitch="${xmlEscape(googlePitch.toString())}">${xmlEscape(text)}</prosody>
   </voice>
@@ -234,7 +234,7 @@ async function synthesizeGoogleMp3(text: string, outPath: string) {
   const client = new textToSpeech.TextToSpeechClient();
   const request = {
     input: { ssml },
-    voice: { languageCode: 'zh-CN', name: googleVoice },
+    voice: { languageCode: 'yue-HK', name: googleVoice },
     audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
   };
 
