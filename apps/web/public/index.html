@@ -147,9 +147,17 @@
   }
 
   .hero-actions {
-    display: flex; gap: 16px; align-items: center;
+    display: flex;
+    gap: 12px 20px;
+    align-items: center;
+    flex-wrap: wrap;
     opacity: 0;
     animation: fadeUp 0.9s var(--ease-out) 0.75s both;
+  }
+
+  .hero-actions .btn-primary {
+    flex: 0 0 100%;
+    width: fit-content;
   }
 
   .btn-primary {
@@ -659,8 +667,17 @@
   }
 
   .cta-actions {
-    display: flex; gap: 16px; justify-content: center; align-items: center;
+    display: flex;
+    gap: 12px 20px;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
+  }
+
+  .cta-actions .btn-primary {
+    flex: 0 0 100%;
+    width: fit-content;
+    justify-content: center;
   }
 
   .cta-note {
@@ -772,7 +789,6 @@
       </a>
       <a href="/upload.html?tab=scanner" class="btn-secondary">
         Scan Picture Books
-        <span class="btn-arrow">→</span>
       </a>
       <a href="https://github.com/pu873967671-code/bookclaw" class="btn-secondary">
         Start for free
@@ -782,7 +798,6 @@
       </a>
       <a href="#how" class="btn-secondary">
         See how it works
-        <span class="btn-arrow">→</span>
       </a>
     </div>
   </div>
@@ -1025,7 +1040,6 @@
       </a>
       <a href="/upload.html?tab=scanner" class="btn-secondary">
         Scan Picture Books
-        <span class="btn-arrow">→</span>
       </a>
       <a href="https://github.com/pu873967671-code/bookclaw" class="btn-secondary">
       View on GitHub
@@ -1035,7 +1049,6 @@
     </a>
     <a href="https://github.com/pu873967671-code/bookclaw/blob/main/DEPLOY.md" class="btn-secondary">
       Deploy docs
-      <span class="btn-arrow">→</span>
     </a>
   </div>
   <div class="cta-note reveal">
