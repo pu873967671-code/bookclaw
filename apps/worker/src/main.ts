@@ -227,37 +227,51 @@ function buildSsml(text: string) {
 }
 
 function splitLongSentence(sentence: string, maxLen = 120) {
-  const parts: string[] = [];
-  let remaining = sentence.trim();
-  const breakRegex = /[,，、；;：:]/g;
+  const normalized = sentence.trim();
+  if (!normalized) return [];
 
-  while (remaining.length > maxLen) {
-    let cut = maxLen;
-    const chunk = remaining.slice(0, maxLen + 1);
-    let match: RegExpExecArray | null;
-    let lastBreak = -1;
-    while ((match = breakRegex.exec(chunk)) !== null) {
-      lastBreak = match.index;
+  const chars = Array.from(normalized);
+  const parts: string[] = [];
+  let start = 0;
+
+  const preferredBreakChars = new Set(['。', '！', '？', '!', '?', '.', ',', '，', '、', '；', ';', '：', ':', '）', ')', '】', ']', '》', '>', '」', '』', ' ']);
+  const minPreferredBreak = Math.max(12, Math.floor(maxLen * 0.35));
+
+  while (start < chars.length) {
+    const remaining = chars.length - start;
+    if (remaining <= maxLen) {
+      parts.push(chars.slice(start).join('').trim());
+      break;
     }
-    if (lastBreak > 20) cut = lastBreak + 1;
-    parts.push(remaining.slice(0, cut).trim());
-    remaining = remaining.slice(cut).trim();
+
+    const end = Math.min(chars.length, start + maxLen);
+    let cut = end;
+
+    for (let i = end - 1; i >= start + minPreferredBreak; i--) {
+      if (preferredBreakChars.has(chars[i])) {
+        cut = i + 1;
+        break;
+      }
+    }
+
+    if (cut <= start) cut = end;
+    parts.push(chars.slice(start, cut).join('').trim());
+    start = cut;
   }
 
-  if (remaining) parts.push(remaining);
   return parts.filter(Boolean);
 }
 
 function chunkTextForTts(text: string, maxLen = 120) {
   const normalized = normalizeText(text);
   const roughSentences = normalized
-    .split(/(?<=[。！？!?\.])/)
+    .split(/(?<=[。！？!?\.;；])/)
     .map((s) => s.trim())
     .filter(Boolean);
 
   const chunks: string[] = [];
   for (const sentence of roughSentences.length ? roughSentences : [normalized]) {
-    if (sentence.length <= maxLen) {
+    if (Array.from(sentence).length <= maxLen) {
       chunks.push(sentence);
       continue;
     }
@@ -265,6 +279,48 @@ function chunkTextForTts(text: string, maxLen = 120) {
   }
 
   return chunks.filter(Boolean);
+}
+
+async function synthesizeChunkWithFallback(
+  client: textToSpeech.TextToSpeechClient,
+  text: string,
+  initialMaxLen = 120,
+  depth = 0
+): Promise<Buffer[]> {
+  const normalized = normalizeText(text);
+  if (!normalized) return [];
+
+  const ssml = buildSsml(normalized);
+  const request = {
+    input: { ssml },
+    voice: { languageCode: 'yue-HK', name: googleVoice },
+    audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
+  };
+
+  try {
+    const [response] = await client.synthesizeSpeech(request as any);
+    return [Buffer.from(response.audioContent as Buffer)];
+  } catch (error: any) {
+    const message = String(error?.message || error || '');
+    const isTooLong = message.includes('INVALID_ARGUMENT') && message.includes('too long');
+    const currentLen = Array.from(normalized).length;
+
+    if (!isTooLong || currentLen <= 24 || depth >= 4) {
+      throw error;
+    }
+
+    const nextMaxLen = Math.max(24, Math.min(Math.floor(currentLen / 2), Math.floor(initialMaxLen * 0.7)));
+    const smallerChunks = chunkTextForTts(normalized, nextMaxLen);
+    if (smallerChunks.length <= 1) {
+      const forcedChunks = splitLongSentence(normalized, nextMaxLen);
+      if (forcedChunks.length <= 1) throw error;
+      const nested = await Promise.all(forcedChunks.map((chunk) => synthesizeChunkWithFallback(client, chunk, nextMaxLen, depth + 1)));
+      return nested.flat();
+    }
+
+    const nested = await Promise.all(smallerChunks.map((chunk) => synthesizeChunkWithFallback(client, chunk, nextMaxLen, depth + 1)));
+    return nested.flat();
+  }
 }
 
 async function synthesizeGoogleMp3(text: string, outPath: string) {
@@ -279,32 +335,22 @@ async function synthesizeGoogleMp3(text: string, outPath: string) {
     throw new Error('google_tts_empty_chunk');
   }
 
-  if (chunks.length === 1) {
-    const ssml = buildSsml(chunks[0]);
-    const request = {
-      input: { ssml },
-      voice: { languageCode: 'yue-HK', name: googleVoice },
-      audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
-    };
-    const [response] = await client.synthesizeSpeech(request as any);
-    const arr = response.audioContent as Buffer;
-    await fs.writeFile(outPath, Buffer.from(arr));
+  const audioParts = (await Promise.all(chunks.map((chunk) => synthesizeChunkWithFallback(client, chunk)))).flat();
+
+  if (audioParts.length === 0) {
+    throw new Error('google_tts_empty_chunk');
+  }
+
+  if (audioParts.length === 1) {
+    await fs.writeFile(outPath, audioParts[0]);
     return;
   }
 
   const partPaths: string[] = [];
   try {
-    for (let i = 0; i < chunks.length; i++) {
-      const ssml = buildSsml(chunks[i]);
-      const request = {
-        input: { ssml },
-        voice: { languageCode: 'yue-HK', name: googleVoice },
-        audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
-      };
-      const [response] = await client.synthesizeSpeech(request as any);
-      const arr = response.audioContent as Buffer;
+    for (let i = 0; i < audioParts.length; i++) {
       const partPath = path.join(os.tmpdir(), `clawread-tts-part-${Date.now()}-${i}-${Math.random().toString(16).slice(2)}.mp3`);
-      await fs.writeFile(partPath, Buffer.from(arr));
+      await fs.writeFile(partPath, audioParts[i]);
       partPaths.push(partPath);
     }
     await concatMp3Files(partPaths, outPath);
