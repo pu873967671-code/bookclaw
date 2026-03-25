@@ -765,13 +765,13 @@
     <p class="hero-sub">Upload any ebook and get a studio-quality audiobook in minutes — powered by AI voices that understand the language, tone, and rhythm of your text.</p>
     <div class="hero-actions">
       <a href="/upload.html" class="btn-primary">
-        电子书
+        Ebooks
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </a>
       <a href="/upload.html?tab=scanner" class="btn-secondary">
-        扫描绘本
+        Scan Picture Books
         <span class="btn-arrow">→</span>
       </a>
       <a href="https://github.com/pu873967671-code/bookclaw" class="btn-secondary">
@@ -799,7 +799,7 @@
           <div class="cover-pattern"></div>
           <span class="cover-tag">Cantonese</span>
           <div class="cover-title-wrap">
-            <div class="cover-cat">粤语绘本</div>
+            <div class="cover-cat">Cantonese Picture Book</div>
             <div class="cover-title">Little Dragon's<br>Big Journey</div>
           </div>
         </div>
@@ -812,7 +812,7 @@
                 <path d="M5 3L13 8L5 13V3Z" fill="#F5F2EA"/>
               </svg>
             </button>
-            <span class="player-lang">粵語 · Azure TTS</span>
+            <span class="player-lang">Cantonese · Azure TTS</span>
           </div>
         </div>
       </div>
@@ -946,7 +946,7 @@
             </div>
             <div class="voice-chip" onclick="selectVoice(this)">
               <div class="voice-name">HiuMaan</div>
-              <div class="voice-lang">zh-HK 粵語</div>
+              <div class="voice-lang">zh-HK Cantonese</div>
             </div>
             <div class="voice-chip" onclick="selectVoice(this)">
               <div class="voice-name">Jenny</div>
@@ -964,31 +964,31 @@
           <div class="demo-card-dots">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
           </div>
-          <span class="demo-card-title">Chapter queue · 小龍的大旅程.epub</span>
+          <span class="demo-card-title">Chapter queue · Little Dragon's Big Journey.epub</span>
         </div>
         <div class="demo-card-body">
           <div class="chapter-list">
             <div class="chapter-row" onclick="selectChapter(this)">
               <span class="ch-num">01</span>
-              <span class="ch-title">第一章 · 出發</span>
+              <span class="ch-title">Chapter 1 · Departure</span>
               <span class="ch-duration">18:24</span>
               <div class="ch-play">▶</div>
             </div>
             <div class="chapter-row playing" onclick="selectChapter(this)">
               <span class="ch-num">02</span>
-              <span class="ch-title">第二章 · 遇見朋友</span>
+              <span class="ch-title">Chapter 2 · Meeting a Friend</span>
               <span class="ch-duration">22:11</span>
               <div class="ch-play">▶</div>
             </div>
             <div class="chapter-row" onclick="selectChapter(this)">
               <span class="ch-num">03</span>
-              <span class="ch-title">第三章 · 挑戰</span>
+              <span class="ch-title">Chapter 3 · The Challenge</span>
               <span class="ch-duration">19:55</span>
               <div class="ch-play">▶</div>
             </div>
             <div class="chapter-row" onclick="selectChapter(this)">
               <span class="ch-num">04</span>
-              <span class="ch-title">第四章 · 歸途</span>
+              <span class="ch-title">Chapter 4 · The Journey Home</span>
               <span class="ch-duration">24:07</span>
               <div class="ch-play">▶</div>
             </div>
@@ -1018,13 +1018,13 @@
   <p class="section-sub reveal" style="margin: 0 auto 48px;">Self-host in minutes with Docker. Full source on GitHub — no vendor lock-in, no paywalls.</p>
   <div class="cta-actions reveal">
     <a href="/upload.html" class="btn-primary">
-        电子书
+        Ebooks
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </a>
       <a href="/upload.html?tab=scanner" class="btn-secondary">
-        扫描绘本
+        Scan Picture Books
         <span class="btn-arrow">→</span>
       </a>
       <a href="https://github.com/pu873967671-code/bookclaw" class="btn-secondary">
@@ -1125,21 +1125,21 @@ function toggleFeature(el) {
 
 // ─── LANGUAGES ───
 const langs = [
-  { flag: '🇭🇰', name: '粵語', code: 'zh-HK', featured: true },
-  { flag: '🇨🇳', name: '普通話', code: 'zh-CN', featured: true },
+  { flag: '🇭🇰', name: 'Cantonese', code: 'zh-HK', featured: true },
+  { flag: '🇨🇳', name: 'Mandarin', code: 'zh-CN', featured: true },
   { flag: '🇺🇸', name: 'English', code: 'en-US' },
   { flag: '🇬🇧', name: 'English', code: 'en-GB' },
-  { flag: '🇯🇵', name: '日本語', code: 'ja-JP' },
-  { flag: '🇰🇷', name: '한국어', code: 'ko-KR' },
+  { flag: '🇯🇵', name: 'Japanese', code: 'ja-JP' },
+  { flag: '🇰🇷', name: 'Korean', code: 'ko-KR' },
   { flag: '🇫🇷', name: 'Français', code: 'fr-FR' },
   { flag: '🇩🇪', name: 'Deutsch', code: 'de-DE' },
   { flag: '🇪🇸', name: 'Español', code: 'es-ES' },
   { flag: '🇵🇹', name: 'Português', code: 'pt-BR' },
-  { flag: '🇮🇳', name: 'हिन्दी', code: 'hi-IN' },
-  { flag: '🇦🇪', name: 'العربية', code: 'ar-AE' },
+  { flag: '🇮🇳', name: 'Hindi', code: 'hi-IN' },
+  { flag: '🇦🇪', name: 'Arabic', code: 'ar-AE' },
   { flag: '🇮🇹', name: 'Italiano', code: 'it-IT' },
   { flag: '🇳🇱', name: 'Nederlands', code: 'nl-NL' },
-  { flag: '🇷🇺', name: 'Русский', code: 'ru-RU' },
+  { flag: '🇷🇺', name: 'Russian', code: 'ru-RU' },
   { flag: '🇹🇷', name: 'Türkçe', code: 'tr-TR' },
 ];
 
