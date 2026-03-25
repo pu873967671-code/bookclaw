@@ -226,22 +226,91 @@ function buildSsml(text: string) {
 </speak>`;
 }
 
+function splitLongSentence(sentence: string, maxLen = 120) {
+  const parts: string[] = [];
+  let remaining = sentence.trim();
+  const breakRegex = /[,，、；;：:]/g;
+
+  while (remaining.length > maxLen) {
+    let cut = maxLen;
+    const chunk = remaining.slice(0, maxLen + 1);
+    let match: RegExpExecArray | null;
+    let lastBreak = -1;
+    while ((match = breakRegex.exec(chunk)) !== null) {
+      lastBreak = match.index;
+    }
+    if (lastBreak > 20) cut = lastBreak + 1;
+    parts.push(remaining.slice(0, cut).trim());
+    remaining = remaining.slice(cut).trim();
+  }
+
+  if (remaining) parts.push(remaining);
+  return parts.filter(Boolean);
+}
+
+function chunkTextForTts(text: string, maxLen = 120) {
+  const normalized = normalizeText(text);
+  const roughSentences = normalized
+    .split(/(?<=[。！？!?\.])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const chunks: string[] = [];
+  for (const sentence of roughSentences.length ? roughSentences : [normalized]) {
+    if (sentence.length <= maxLen) {
+      chunks.push(sentence);
+      continue;
+    }
+    chunks.push(...splitLongSentence(sentence, maxLen));
+  }
+
+  return chunks.filter(Boolean);
+}
+
 async function synthesizeGoogleMp3(text: string, outPath: string) {
   const resolvedGoogleCreds = await ensureGoogleCredentialsPath();
   if (!resolvedGoogleCreds) throw new Error('google_tts_credentials_missing');
-  const ssml = buildSsml(text);
 
+  const chunks = chunkTextForTts(text);
   const client = new textToSpeech.TextToSpeechClient();
-  const request = {
-    input: { ssml },
-    voice: { languageCode: 'yue-HK', name: googleVoice },
-    audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
-  };
-
-  const [response] = await client.synthesizeSpeech(request as any);
-  const arr = response.audioContent as Buffer;
   await ensureDirForFile(outPath);
-  await fs.writeFile(outPath, Buffer.from(arr));
+
+  if (chunks.length === 0) {
+    throw new Error('google_tts_empty_chunk');
+  }
+
+  if (chunks.length === 1) {
+    const ssml = buildSsml(chunks[0]);
+    const request = {
+      input: { ssml },
+      voice: { languageCode: 'yue-HK', name: googleVoice },
+      audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
+    };
+    const [response] = await client.synthesizeSpeech(request as any);
+    const arr = response.audioContent as Buffer;
+    await fs.writeFile(outPath, Buffer.from(arr));
+    return;
+  }
+
+  const partPaths: string[] = [];
+  try {
+    for (let i = 0; i < chunks.length; i++) {
+      const ssml = buildSsml(chunks[i]);
+      const request = {
+        input: { ssml },
+        voice: { languageCode: 'yue-HK', name: googleVoice },
+        audioConfig: { audioEncoding: 'MP3', speakingRate: googleRate, pitch: googlePitch }
+      };
+      const [response] = await client.synthesizeSpeech(request as any);
+      const arr = response.audioContent as Buffer;
+      const partPath = path.join(os.tmpdir(), `clawread-tts-part-${Date.now()}-${i}-${Math.random().toString(16).slice(2)}.mp3`);
+      await fs.writeFile(partPath, Buffer.from(arr));
+      partPaths.push(partPath);
+    }
+    await concatMp3Files(partPaths, outPath);
+  } finally {
+    await Promise.all(partPaths.map((p) => fs.rm(p, { force: true }).catch(() => {})));
+  }
 }
 
 async function getAudioDurationSec(filePath: string) {
