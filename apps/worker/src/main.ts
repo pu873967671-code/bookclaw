@@ -50,7 +50,7 @@ const azureKey = process.env.AZURE_TTS_KEY || '';
 const azureRegion = process.env.AZURE_TTS_REGION || 'eastasia';
 const azureEndpoint = process.env.AZURE_TTS_ENDPOINT || `https://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/v1`;
 const azureVoice = process.env.AZURE_TTS_VOICE || 'zh-HK-HiuGaaiNeural';
-const azureRate = process.env.AZURE_TTS_RATE || '-10%';
+const azureRate = process.env.AZURE_TTS_RATE || '-4%';
 const azurePitch = process.env.AZURE_TTS_PITCH || '+0Hz';
 const ffmpegBin = process.env.FFMPEG_BIN || 'ffmpeg';
 const ffprobeBin = process.env.FFPROBE_BIN || 'ffprobe';
@@ -380,10 +380,15 @@ async function synthesizeGoogleMp3(text: string, outPath: string) {
 }
 
 function buildAzureSsml(text: string) {
+  const normalized = sanitizeTextForTts(text);
+  const escaped = xmlEscape(normalized)
+    .replace(/([。！？!?])/g, '$1<break time="700ms"/>')
+    .replace(/([，、；;：:])/g, '$1<break time="280ms"/>');
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <speak version="1.0" xml:lang="zh-HK">
   <voice name="${xmlEscape(azureVoice)}">
-    <prosody rate="${xmlEscape(azureRate)}" pitch="${xmlEscape(azurePitch)}">${xmlEscape(sanitizeTextForTts(text))}</prosody>
+    <prosody rate="${xmlEscape(azureRate)}" pitch="${xmlEscape(azurePitch)}">${escaped}</prosody>
   </voice>
 </speak>`;
 }
