@@ -119,6 +119,20 @@ function normalizeText(raw: string) {
     .trim();
 }
 
+function sanitizeTextForTts(raw: string) {
+  return normalizeText(raw)
+    // ⟪但⧸daan6⟫ → 但
+    .replace(/⟪\s*([^⧸⟫]+?)\s*⧸[^⟫]*⟫/g, '$1')
+    // 兜底：移除残留特殊包裹符号
+    .replace(/[⟪⟫⧸]/g, ' ')
+    // 移除裸露粤拼/拼音 tone 标记（例如 daan6 / hou2）
+    .replace(/\b[a-zA-Z]+[1-9]\b/g, ' ')
+    // 合并多余空格
+    .replace(/[ \u00A0]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function stripHtml(input: string) {
   const noScript = input.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ');
   const text = noScript
@@ -263,7 +277,7 @@ function splitLongSentence(sentence: string, maxLen = 120) {
 }
 
 function chunkTextForTts(text: string, maxLen = 120) {
-  const normalized = normalizeText(text);
+  const normalized = sanitizeTextForTts(text);
   const roughSentences = normalized
     .split(/(?<=[。！？!?\.;；])/)
     .map((s) => s.trim())
@@ -287,7 +301,7 @@ async function synthesizeChunkWithFallback(
   initialMaxLen = 120,
   depth = 0
 ): Promise<Buffer[]> {
-  const normalized = normalizeText(text);
+  const normalized = sanitizeTextForTts(text);
   if (!normalized) return [];
 
   const ssml = buildSsml(normalized);
