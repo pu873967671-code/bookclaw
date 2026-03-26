@@ -46,6 +46,12 @@ const googleCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
 const googleVoice = process.env.GOOGLE_TTS_VOICE || 'yue-HK-Chirp3-HD-Aoede';
 const googleRate = parseFloat(process.env.GOOGLE_TTS_RATE || '1.0');
 const googlePitch = parseFloat(process.env.GOOGLE_TTS_PITCH || '0');
+const azureKey = process.env.AZURE_TTS_KEY || '';
+const azureRegion = process.env.AZURE_TTS_REGION || 'eastasia';
+const azureEndpoint = process.env.AZURE_TTS_ENDPOINT || `https://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/v1`;
+const azureVoice = process.env.AZURE_TTS_VOICE || 'zh-HK-HiuGaaiNeural';
+const azureRate = process.env.AZURE_TTS_RATE || '-10%';
+const azurePitch = process.env.AZURE_TTS_PITCH || '+0Hz';
 const ffmpegBin = process.env.FFMPEG_BIN || 'ffmpeg';
 const ffprobeBin = process.env.FFPROBE_BIN || 'ffprobe';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -373,6 +379,41 @@ async function synthesizeGoogleMp3(text: string, outPath: string) {
   }
 }
 
+function buildAzureSsml(text: string) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.0" xml:lang="zh-HK">
+  <voice name="${xmlEscape(azureVoice)}">
+    <prosody rate="${xmlEscape(azureRate)}" pitch="${xmlEscape(azurePitch)}">${xmlEscape(sanitizeTextForTts(text))}</prosody>
+  </voice>
+</speak>`;
+}
+
+async function synthesizeAzureMp3(text: string, outPath: string) {
+  if (!azureKey) throw new Error('azure_tts_credentials_missing');
+  const endpoint = azureEndpoint;
+  const ssml = buildAzureSsml(text);
+  await ensureDirForFile(outPath);
+
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': azureKey,
+      'Content-Type': 'application/ssml+xml',
+      'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3',
+      'User-Agent': 'clawread-worker'
+    },
+    body: ssml
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`azure_tts_failed:${res.status}:${detail.slice(0, 300)}`);
+  }
+
+  const arr = await res.arrayBuffer();
+  await fs.writeFile(outPath, Buffer.from(arr));
+}
+
 async function getAudioDurationSec(filePath: string) {
   const { stdout } = await execFile(ffprobeBin, [
     '-v', 'error',
@@ -545,6 +586,8 @@ async function runTTS(data: QueueJobData) {
 
     if (mockTts) {
       await generateMockMp3(ch.text_content, outPath);
+    } else if (azureKey) {
+      await synthesizeAzureMp3(ch.text_content, outPath);
     } else {
       await synthesizeGoogleMp3(ch.text_content, outPath);
     }
